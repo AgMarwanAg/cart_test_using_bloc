@@ -2,6 +2,7 @@ import 'package:cart_test/cart_event.dart';
 import 'package:cart_test/cart_state.dart';
 import 'package:cart_test/model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartState()) {
     on<AddProduct>(_onAddProduct);
@@ -13,7 +14,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void _onAddProduct(AddProduct event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
-    int index = updatedItems.indexWhere((item) => item.product.id == event.product.id);
+    int index = updatedItems.indexWhere((item) => item.product.slack == event.product.slack);
 
     if (index >= 0) {
       updatedItems[index].count += 1;
@@ -25,13 +26,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void _onRemoveProduct(RemoveProduct event, Emitter<CartState> emit) {
-    List<CartItem> updatedItems = state.items.where((item) => item.product.id != event.productId).toList();
+    List<CartItem> updatedItems = state.items.where((item) => item.product.slack != event.productId).toList();
     emit(CartState(items: updatedItems));
   }
 
   void _onUpdateProductCount(UpdateProductCount event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
-    int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
+    int index = updatedItems.indexWhere((item) => item.product.slack == event.productId);
 
     if (index >= 0 && event.count > 0) {
       updatedItems[index].count = event.count;
@@ -42,17 +43,18 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void _onApplyDiscount(ApplyDiscount event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
-    int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
+    int index = updatedItems.indexWhere((item) => item.product.slack == event.productId);
 
-    if (index >= 0 && event.discount >= 0 && event.discount <= 1) {
-      updatedItems[index].discount = event.discount;
-    }
+    // if (index >= 0 && event.discount >= 0 && event.discount <= 1) {
+    updatedItems[index].discount = event.discount;
+    // }
 
     emit(CartState(items: updatedItems));
   }
+
   void _onRemoveDiscount(RemoveDiscount event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
-    int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
+    int index = updatedItems.indexWhere((item) => item.product.slack == event.productId);
 
     if (index >= 0) {
       updatedItems[index].discount = 0.0;
