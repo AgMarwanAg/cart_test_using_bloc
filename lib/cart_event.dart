@@ -32,3 +32,16 @@ class RemoveDiscount extends CartEvent {
 
   RemoveDiscount(this.productId);
 }
+class AddModifier extends CartEvent {
+  final String productId;
+  final Modifier modifier;
+
+  AddModifier(this.productId, this.modifier);
+}
+
+class RemoveModifier extends CartEvent {
+  final String productId;
+  final Modifier modifier;
+
+  RemoveModifier(this.productId, this.modifier);
+}

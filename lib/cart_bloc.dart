@@ -2,6 +2,7 @@ import 'package:cart_test/cart_event.dart';
 import 'package:cart_test/cart_state.dart';
 import 'package:cart_test/model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartState()) {
     on<AddProduct>(_onAddProduct);
@@ -9,6 +10,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<UpdateProductCount>(_onUpdateProductCount);
     on<ApplyDiscount>(_onApplyDiscount);
     on<RemoveDiscount>(_onRemoveDiscount);
+    on<AddModifier>(_onAddModifier);
+    on<RemoveModifier>(_onRemoveModifier);
   }
 
   void _onAddProduct(AddProduct event, Emitter<CartState> emit) {
@@ -50,12 +53,36 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     emit(CartState(items: updatedItems));
   }
+
   void _onRemoveDiscount(RemoveDiscount event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
     int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
 
     if (index >= 0) {
       updatedItems[index].discount = 0.0;
+    }
+
+    emit(CartState(items: updatedItems));
+  }
+
+    void _onAddModifier(AddModifier event, Emitter<CartState> emit) {
+    List<CartItem> updatedItems = List.from(state.items);
+    int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
+
+    if (index >= 0) {
+      final modifiers = List<Modifier>.from(updatedItems[index].selectedModifiers)..add(event.modifier);
+      updatedItems[index] = updatedItems[index].copyWith(selectedModifiers: modifiers);
+    }
+
+    emit(CartState(items: updatedItems));
+  }
+
+  void _onRemoveModifier(RemoveModifier event, Emitter<CartState> emit) {
+    List<CartItem> updatedItems = List.from(state.items);
+    int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
+
+    if (index >= 0) {
+      updatedItems[index].selectedModifiers.removeWhere((modifier) => modifier.id == event.modifier.id);
     }
 
     emit(CartState(items: updatedItems));

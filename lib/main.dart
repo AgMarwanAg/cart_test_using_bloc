@@ -93,62 +93,7 @@ class ProductPage extends StatelessWidget {
                   itemCount: products.length,
                 ),
                 const Divider(height: 4),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: state.items.length,
-                  itemBuilder: (context, index) {
-                    final item = state.items[index];
-                    return Container(
-                      color: item.discount > 0 ? Colors.green.withOpacity(0.1) : Colors.transparent,
-                      child: ListTile(
-                        title: Text(item.product.name),
-                        subtitle: Text('Price: \$${item.product.price} x ${item.count} = \$${item.totalPrice}'),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: () {
-                                if (item.count == 1) {
-                                  context.read<CartBloc>().add(RemoveProduct(item.product.id));
-                                  return;
-                                }
-                                context.read<CartBloc>().add(UpdateProductCount(item.product.id, item.count - 1));
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () {
-                                context.read<CartBloc>().add(UpdateProductCount(item.product.id, item.count + 1));
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                context.read<CartBloc>().add(RemoveProduct(item.product.id));
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.discount),
-                              onPressed: () {
-                                const double discount = 0.2;
-                                context.read<CartBloc>().add(ApplyDiscount(item.product.id, discount));
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle),
-                              onPressed: () {
-                                final String productId = item.product.id;
-                                context.read<CartBloc>().add(RemoveDiscount(productId));
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                const CartList(),
                 Text('Subtotal: \$${state.subtotal.toStringAsFixed(2)}'),
                 Text('Total Discount: -\$${state.totalDiscount.toStringAsFixed(2)}'),
                 Text('Total: \$${state.totalAmount.toStringAsFixed(2)}'),
@@ -168,19 +113,8 @@ class ProductPage extends StatelessWidget {
                 context,
                 '/cart',
               );
-              // // Example: Add a product to the cart
-              // final product = Product(id: '1', name: 'Product 1', price: 10.0);
-              // context.read<CartBloc>().add(AddProduct(product));
             },
           ),
-          // FloatingActionButton(
-          //   child: const Icon(Icons.add),
-          //   onPressed: () {
-          //     // Example: Add a product to the cart
-          //     final product = Product(id: '2', name: 'Product 2', price: 5.0);
-          //     context.read<CartBloc>().add(AddProduct(product));
-          //   },
-          // ),
         ],
       ),
     );
@@ -188,7 +122,10 @@ class ProductPage extends StatelessWidget {
 }
 
 List<Product> products = [
-  Product(id: '1', name: 'Product 1', price: 10.0),
+  Product(id: '1', name: 'Product 1', price: 10.0, modifiers: [
+    Modifier(id: '1', name: 'Extra Cheese', price: 2.0),
+    Modifier(id: '2', name: 'Extra Sauce', price: 1.0),
+  ]),
   Product(id: '2', name: 'Product 2', price: 5.0),
   Product(id: '3', name: 'Product 3', price: 15.0),
   Product(id: '4', name: 'Product 4', price: 20.0),
