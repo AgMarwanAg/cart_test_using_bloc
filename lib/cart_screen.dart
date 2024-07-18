@@ -88,6 +88,12 @@ class CartList extends StatelessWidget {
                             context.read<CartBloc>().add(RemoveDiscount(productId));
                           },
                         ),
+                        IconButton(
+                          icon: Icon(item.isGift ? Icons.grid_off_outlined : Icons.card_giftcard),
+                          onPressed: () {
+                            context.read<CartBloc>().add(ToggleGiftStatus(item.product.id));
+                          },
+                        ),
                       ],
                     ),
                     onTap: item.product.modifiers.isEmpty

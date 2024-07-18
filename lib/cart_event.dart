@@ -45,3 +45,8 @@ class RemoveModifier extends CartEvent {
 
   RemoveModifier(this.productId, this.modifier);
 }
+class ToggleGiftStatus extends CartEvent {
+  final String productId;
+
+  ToggleGiftStatus(this.productId);
+}

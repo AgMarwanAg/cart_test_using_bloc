@@ -12,6 +12,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<RemoveDiscount>(_onRemoveDiscount);
     on<AddModifier>(_onAddModifier);
     on<RemoveModifier>(_onRemoveModifier);
+    on<ToggleGiftStatus>(_onToggleGiftStatus);
   }
 
   void _onAddProduct(AddProduct event, Emitter<CartState> emit) {
@@ -65,7 +66,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(CartState(items: updatedItems));
   }
 
-    void _onAddModifier(AddModifier event, Emitter<CartState> emit) {
+  void _onAddModifier(AddModifier event, Emitter<CartState> emit) {
     List<CartItem> updatedItems = List.from(state.items);
     int index = updatedItems.indexWhere((item) => item.product.id == event.productId);
 
@@ -86,5 +87,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     }
 
     emit(CartState(items: updatedItems));
+  }
+
+  void _onToggleGiftStatus(ToggleGiftStatus event, Emitter<CartState> emit) {
+    final updatedItems = state.items.map((item) {
+      if (item.product.id == event.productId) {
+        return item.copyWith(isGift: !item.isGift);
+      }
+      return item;
+    }).toList();
+
+    emit(state.copyWith(items: updatedItems));
   }
 }

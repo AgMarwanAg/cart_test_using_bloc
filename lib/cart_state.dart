@@ -16,4 +16,11 @@ class CartState {
   double get totalAmount {
     return items.fold(0.0, (sum, item) => sum + item.totalPrice);
   }
+  CartState copyWith({
+    List<CartItem>? items,
+  }) {
+    return CartState(
+      items: items ?? this.items,
+    );
+  }
 }

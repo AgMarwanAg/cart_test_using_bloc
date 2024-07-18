@@ -2,13 +2,14 @@ class Product {
   final String id;
   final String name;
   final double price;
+
   final List<Modifier> modifiers;
 
   Product({
     required this.id,
     required this.name,
     required this.price,
-    this.modifiers = const [],
+     this.modifiers = const [],
   });
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -22,12 +23,15 @@ class CartItem {
   int count;
   double discount;
   List<Modifier> selectedModifiers;
+  bool isGift;
+
 
   CartItem({
     required this.product,
     this.count = 1,
     this.discount = 0.0,
     this.selectedModifiers = const [],
+    this.isGift=false,
   });
 
   double get totalModifierPrice {
@@ -38,7 +42,7 @@ class CartItem {
   double get totalPrice {
     final basePrice = product.price * count;
     final discountAmount = basePrice * discount;
-    return basePrice - discountAmount + totalModifierPrice;
+    return  isGift ? 0 :basePrice - discountAmount + totalModifierPrice;
   }
 
   Map<String, dynamic> toJson() => {
@@ -55,12 +59,14 @@ class CartItem {
   CartItem copyWith({
     Product? product,
     int? count,
+     bool? isGift,
     double? discount,
     List<Modifier>? selectedModifiers,
   }) =>
       CartItem(
         product: product ?? this.product,
         count: count ?? this.count,
+        isGift: isGift ?? this.isGift,
         discount: discount ?? this.discount,
         selectedModifiers: selectedModifiers ?? this.selectedModifiers,
       );
